@@ -1,15 +1,14 @@
 sabnzbd:
   image: timhaak/sabnzbd
+  hostname: "sikozu.local"
   restart: always
   ports:
     - "8080:8080"
     - "8090:8090"
-  links:
-    - plex
   volumes:
     - "./volumes/sabnzbd/config:/config"
     - "./volumes/sabnzbd/scratch:/scratch"
-    - "./volumes/data:/data"
+    - "./volumes/sabnzbd/data:/data"
 
 transmission:
   image: timhaak/transmission
@@ -21,7 +20,7 @@ transmission:
   volumes:
     - "./volumes/transmission/config:/config"
     - "./volumes/transmission/scratch:/scratch"
-    - "./volumes/data:/data"
+    - "./volumes/transmission/data:/data"
 
 sickbeard:
   image: timhaak/sickbeard
@@ -35,7 +34,7 @@ sickbeard:
   volumes:
     - "./volumes/sickbeard/config:/config"
     - "./volumes/sickbeard/scratch:/scratch"
-    - "./volumes/data:/data"
+    - "./volumes/sickbeard/data:/data"
 
 couchpotato:
   image: timhaak/couchpotato
@@ -43,13 +42,17 @@ couchpotato:
     - "5050:5050"
   volumes:
     - "./volumes/couchpotato/config:/config"
-    - "./volumes/data:/data"
+    - "./volumes/couchpotato/data:/data"
+data:
+  image: busybox
+  volumes:
+    - "/config"
+    - "/data"
 
 plex:
   image: timhaak/plexpass
+  net: "host"
   ports:
     - "32400:32400"
-  volumes:
-    - "./volumes/plex/config:/config"
-    - "./volumes/data:/data"
-
+  volumes_from:
+    - data
