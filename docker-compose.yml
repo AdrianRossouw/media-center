@@ -1,0 +1,55 @@
+sabnzbd:
+  image: timhaak/sabnzbd
+  restart: always
+  ports:
+    - "8080:8080"
+    - "8090:8090"
+  links:
+    - plex
+  volumes:
+    - "./volumes/sabnzbd/config:/config"
+    - "./volumes/sabnzbd/scratch:/scratch"
+    - "./volumes/data:/data"
+
+transmission:
+  image: timhaak/transmission
+  restart: always
+  ports:
+    - "9091:9091"
+    - "51413:51413"
+    - "51413:51413/udp"
+  volumes:
+    - "./volumes/transmission/config:/config"
+    - "./volumes/transmission/scratch:/scratch"
+    - "./volumes/data:/data"
+
+sickbeard:
+  image: timhaak/sickbeard
+  restart: always
+  ports:
+    - "8081:8081"
+  links:
+    - sabnzbd
+    - transmission
+    - plex
+  volumes:
+    - "./volumes/sickbeard/config:/config"
+    - "./volumes/sickbeard/scratch:/scratch"
+    - "./volumes/data:/data"
+
+couchpotato:
+  image: timhaak/couchpotato
+  ports:
+    - "5050:5050"
+  volumes:
+    - "./volumes/couchpotato/config:/config"
+    - "./volumes/data:/data"
+
+plex:
+  image: timhaak/plexpass
+  ports:
+    - "32400:32400"
+  volumes:
+    - "./volumes/plex/config:/config"
+    - "./volumes/data:/data"
+
